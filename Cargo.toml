@@ -1,0 +1,23 @@
+[package]
+name = "arkbot"
+version = "0.0.1-dev"
+description = "A Rust rewrite (and complete redesign) of Arkanosis' Wikipedia bot"
+
+authors = ["Jérémie Roquet <jroquet@arkanosis.net>"]
+
+documentation = "https://github.com/Arkanosis/arkbot-rs"
+homepage = "https://github.com/Arkanosis/arkbot-rs"
+repository = "https://github.com/Arkanosis/arkbot-rs"
+
+readme = "README.md"
+license = "ISC"
+
+keywords = ["wikipedia", "bot"]
+categories = ["bot"]
+
+edition = "2018"
+
+[dependencies]
+docopt = "1.1"
+serde = "1.0"
+serde_derive = "1.0"
