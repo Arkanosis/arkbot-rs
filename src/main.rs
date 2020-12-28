@@ -29,6 +29,6 @@ fn main() {
     if args.flag_version {
         println!("arkbot v{}", arkbot::version());
     } else {
-	// TODO FIXME
+        arkbot::run();
     }
 }

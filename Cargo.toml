@@ -18,6 +18,9 @@ categories = ["bot"]
 edition = "2018"
 
 [dependencies]
+bzip2 = "0.4"
 docopt = "1.1"
+quick-xml = "0.20"
+reqwest = "0.9"
 serde = "1.0"
 serde_derive = "1.0"
