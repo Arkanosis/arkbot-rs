@@ -11,7 +11,7 @@ pub fn version() -> &'static str {
 }
 
 pub fn run() {
-    let bz_stream = reqwest::get("https://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2");
+    let bz_stream = reqwest::blocking::get("https://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2");
     let xml_stream = std::io::BufReader::new(bzip2::read::BzDecoder::new(bz_stream.unwrap()));
     let mut xml_reader = quick_xml::Reader::from_reader(xml_stream);
     let mut buffer = Vec::new();
