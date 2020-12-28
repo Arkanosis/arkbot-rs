@@ -18,6 +18,25 @@ pub fn run() {
     let mut current_tag = Tag::Other;
     loop {
         match xml_reader.read_event(&mut buffer) {
+            Ok(Event::Empty(ref event)) => {
+                match event.name() {
+                    b"redirect" => {
+                        for attribute in event.attributes() {
+                            match attribute {
+                                Ok(attribute) => {
+                                    if attribute.key == b"title" {
+                                        println!("  => {}", std::str::from_utf8(&attribute.unescaped_value().unwrap()).unwrap());
+                                        // TODO FIXME
+                                    }
+                                }
+                                Err(_) => (), // ignore bad attribute in the dump
+                            }
+                        }
+                        current_tag = Tag::Other
+                    },
+                    _ => current_tag = Tag::Other,
+                }
+            },
             Ok(Event::Start(ref event)) => {
                 match event.name() {
                     b"title" => current_tag = Tag::Title,
@@ -32,16 +51,16 @@ pub fn run() {
                     Tag::Title => {
                         match event.unescaped() {
                             Ok(ref buffer) => {
-				println!("{}", std::str::from_utf8(buffer).unwrap());
-				// TODO FIXME
+                                println!("{}", std::str::from_utf8(buffer).unwrap());
+                                // TODO FIXME
                             }
                             Err(_) => (), // ignore encoding error in the dump
                         }
-                    }
+                    },
                     Tag::UserName => {
                         match event.unescaped() {
                             Ok(ref buffer) => {
-				// TODO FIXME
+                                // TODO FIXME
                             },
                             Err(_) => (), // ignore encoding error in the dump
                         }
