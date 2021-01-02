@@ -13,6 +13,165 @@ struct Page {
     target: Option<String>,
 }
 
+trait Process {
+    fn process(&mut self, page: &Page);
+}
+
+struct Debug {
+    // Nothing
+}
+
+impl Debug {
+    fn new() -> Self {
+        Debug {
+            // Nothing
+        }
+    }
+}
+
+impl Process for Debug {
+    fn process(&mut self, page: &Page) {
+        match page.target {
+            None => {
+                if let Some(ref text) = page.text {
+                    println!("Page: '{}', length: {}", page.title, text.len());
+                } else {
+                    eprintln!("arkbot: page without text: '{}'", page.title);
+                }
+            },
+            Some(ref target) => {
+                println!("Page: '{}', redirect to: {}", page.title, target);
+            },
+        }
+    }
+}
+
+struct Impasse {
+    // TODO
+}
+
+impl Impasse {
+    fn new() -> Self {
+        Impasse {
+            // TODO
+        }
+    }
+}
+
+impl Process for Impasse {
+    fn process(&mut self, page: &Page) {
+        // TODO
+    }
+}
+
+struct Empty {
+    // TODO
+}
+
+impl Empty {
+    fn new() -> Self {
+        Empty {
+            // TODO
+        }
+    }
+}
+
+impl Process for Empty {
+    fn process(&mut self, page: &Page) {
+        // TODO
+    }
+}
+
+struct LastEdit {
+    // TODO
+}
+
+impl LastEdit {
+    fn new() -> Self {
+        LastEdit {
+            // TODO
+        }
+    }
+}
+
+impl Process for LastEdit {
+    fn process(&mut self, page: &Page) {
+        // TODO
+    }
+}
+
+struct NoPortal {
+    // TODO
+}
+
+impl NoPortal {
+    fn new() -> Self {
+        NoPortal {
+            // TODO
+        }
+    }
+}
+
+impl Process for NoPortal {
+    fn process(&mut self, page: &Page) {
+        // TODO
+    }
+}
+
+struct NoInfobox {
+    // TODO
+}
+
+impl NoInfobox {
+    fn new() -> Self {
+        NoInfobox {
+            // TODO
+        }
+    }
+}
+
+impl Process for NoInfobox {
+    fn process(&mut self, page: &Page) {
+        // TODO
+    }
+}
+
+struct Commercial {
+    // TODO
+}
+
+impl Commercial {
+    fn new() -> Self {
+        Commercial {
+            // TODO
+        }
+    }
+}
+
+impl Process for Commercial {
+    fn process(&mut self, page: &Page) {
+        // TODO
+    }
+}
+
+struct NamespaceRedirect {
+    // TODO
+}
+
+impl NamespaceRedirect {
+    fn new() -> Self {
+        NamespaceRedirect {
+            // TODO
+        }
+    }
+}
+
+impl Process for NamespaceRedirect {
+    fn process(&mut self, page: &Page) {
+        // TODO
+    }
+}
+
 pub fn version() -> &'static str {
     return option_env!("CARGO_PKG_VERSION").unwrap_or("unknown");
 }
@@ -26,6 +185,15 @@ pub fn run() {
     let mut current_title: Option<String> = None;
     let mut current_text: Option<String> = None;
     let mut current_target: Option<String> = None;
+    let mut processors: Vec<Box<Process>> = Vec::new();
+    processors.push(Box::new(Debug::new()));
+    processors.push(Box::new(Impasse::new()));
+    processors.push(Box::new(Empty::new()));
+    processors.push(Box::new(LastEdit::new()));
+    processors.push(Box::new(NoPortal::new()));
+    processors.push(Box::new(NoInfobox::new()));
+    processors.push(Box::new(Commercial::new()));
+    processors.push(Box::new(NamespaceRedirect::new()));
     loop {
         match xml_reader.read_event(&mut buffer) {
             Ok(Event::Empty(ref event)) => {
@@ -70,10 +238,8 @@ pub fn run() {
                         current_title = None;
                         current_text = None;
                         current_target = None;
-                        if page.target.is_some() {
-                            println!("Page: '{}', redirect to: {}", page.title, page.target.unwrap());
-                        } else {
-                            println!("Page: '{}', length: {}", page.title, page.text.unwrap().len());
+                        for processor in processors.iter_mut() {
+                            processor.process(&page);
                         }
                         current_tag = Tag::Other;
                     },
@@ -101,7 +267,7 @@ pub fn run() {
                     Tag::UserName => {
                         match event.unescaped() {
                             Ok(ref buffer) => {
-                                // TODO FIXME
+                                // TODO
                             },
                             Err(_) => (), // ignore encoding error in the dump
                         }
