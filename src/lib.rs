@@ -1,5 +1,13 @@
 use quick_xml::events::Event;
 
+use std::{
+    fs::File,
+    io::{
+        BufWriter,
+        Write,
+    },
+};
+
 enum Tag {
     Title,
     Text,
@@ -15,6 +23,7 @@ struct Page {
 
 trait Process {
     fn process(&mut self, page: &Page);
+    fn write_to_file(&mut self);
 }
 
 struct Debug {
@@ -44,6 +53,9 @@ impl Process for Debug {
             },
         }
     }
+    fn write_to_file(&mut self) {
+        // Nothing
+    }
 }
 
 struct Impasse {
@@ -60,6 +72,9 @@ impl Impasse {
 
 impl Process for Impasse {
     fn process(&mut self, page: &Page) {
+        // TODO
+    }
+    fn write_to_file(&mut self) {
         // TODO
     }
 }
@@ -80,6 +95,9 @@ impl Process for Empty {
     fn process(&mut self, page: &Page) {
         // TODO
     }
+    fn write_to_file(&mut self) {
+        // TODO
+    }
 }
 
 struct LastEdit {
@@ -96,6 +114,9 @@ impl LastEdit {
 
 impl Process for LastEdit {
     fn process(&mut self, page: &Page) {
+        // TODO
+    }
+    fn write_to_file(&mut self) {
         // TODO
     }
 }
@@ -116,6 +137,9 @@ impl Process for NoPortal {
     fn process(&mut self, page: &Page) {
         // TODO
     }
+    fn write_to_file(&mut self) {
+        // TODO
+    }
 }
 
 struct NoInfobox {
@@ -132,6 +156,9 @@ impl NoInfobox {
 
 impl Process for NoInfobox {
     fn process(&mut self, page: &Page) {
+        // TODO
+    }
+    fn write_to_file(&mut self) {
         // TODO
     }
 }
@@ -152,23 +179,82 @@ impl Process for Commercial {
     fn process(&mut self, page: &Page) {
         // TODO
     }
+    fn write_to_file(&mut self) {
+        // TODO
+    }
 }
 
 struct NamespaceRedirect {
-    // TODO
+    titles: Vec<String>,
 }
 
 impl NamespaceRedirect {
     fn new() -> Self {
         NamespaceRedirect {
-            // TODO
+            titles: Vec::new(),
         }
     }
 }
 
+fn has_namespace(title: &String) -> bool {
+    for namespace in [
+        "Média:",
+        "Spécial:",
+        "Discussion:",
+        "Utilisateur:",
+        "Discussion utilisateur:",
+        "Wikipédia:",
+        "Discussion Wikipédia:",
+        "Fichier:",
+        "Discussion fichier:",
+        "MediaWiki:",
+        "Discussion MediaWiki:",
+        "Modèle:",
+        "Discussion modèle:",
+        "Aide:",
+        "Discussion aide:",
+        "Catégorie:",
+        "Discussion catégorie:",
+        "Portail:",
+        "Discussion Portail:",
+        "Projet:",
+        "Discussion Projet:",
+        "Référence:",
+        "Discussion Référence:",
+        "Module:",
+        "Discussion module:",
+        "Sujet:",
+    ].iter() {
+        if title.starts_with(namespace) {
+            return true;
+        }
+    }
+    return false;
+}
+
 impl Process for NamespaceRedirect {
     fn process(&mut self, page: &Page) {
-        // TODO
+        match page.target {
+            Some(ref target) => {
+                if has_namespace(target) && !has_namespace(&page.title) {
+                    self.titles.push(page.title.to_string());
+                }
+            },
+            _ => (),
+        }
+    }
+    fn write_to_file(&mut self) {
+        self.titles.sort();
+        const output_file: &str = "data/frwiki-ns_redirects-latest.txt";
+        if let Ok(file) = File::create(output_file) {
+            let mut writer = BufWriter::new(file);
+            for title in self.titles.iter() {
+                writer.write(title.as_bytes());
+                writer.write(b"\n");
+            }
+        } else {
+            eprintln!("arkbot: unable to create file: '{}'", output_file);
+        }
     }
 }
 
@@ -185,7 +271,7 @@ pub fn run() {
     let mut current_title: Option<String> = None;
     let mut current_text: Option<String> = None;
     let mut current_target: Option<String> = None;
-    let mut processors: Vec<Box<Process>> = Vec::new();
+    let mut processors: Vec<Box<dyn Process>> = Vec::new();
     processors.push(Box::new(Debug::new()));
     processors.push(Box::new(Impasse::new()));
     processors.push(Box::new(Empty::new()));
@@ -283,5 +369,8 @@ pub fn run() {
             _ => (),
         }
         buffer.clear();
+    }
+    for processor in processors.iter_mut() {
+        processor.write_to_file();
     }
 }
