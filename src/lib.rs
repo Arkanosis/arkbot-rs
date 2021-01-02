@@ -236,7 +236,9 @@ impl Process for NamespaceRedirect {
     fn process(&mut self, page: &Page) {
         match page.target {
             Some(ref target) => {
-                if has_namespace(target) && !has_namespace(&page.title) {
+                if !page.title.starts_with("P:") &&
+                    has_namespace(target) &&
+                    !has_namespace(&page.title) {
                     self.titles.push(page.title.to_string());
                 }
             },
