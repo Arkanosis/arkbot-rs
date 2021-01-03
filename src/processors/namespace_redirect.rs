@@ -73,8 +73,8 @@ impl processors::Process for NamespaceRedirect {
         if let Ok(file) = File::create(output_file) {
             let mut writer = BufWriter::new(file);
             for title in self.titles.iter() {
-                writer.write(title.as_bytes());
-                writer.write(b"\n");
+                writer.write(title.as_bytes()).unwrap();
+                writer.write(b"\n").unwrap();
             }
         } else {
             eprintln!("arkbot: unable to create file: '{}'", output_file);
