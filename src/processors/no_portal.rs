@@ -21,41 +21,41 @@ impl NoPortal {
         NoPortal {
             titles: Vec::new(),
             portal: Regex::new(r"(?imsx)\{\{(?:
-                abbayes[ _]homonymes|
-                arrondissements[ _]homonymes|
-                bandeau[ _]standard[ _]pour[ _]page[ _]d'homonymie|
-                batailles[ _]homonymes|
-                cantons[ _]homonymes|
-                communes[ _]françaises[ _]homonymes|
+                abbayes[\s_]homonymes|
+                arrondissements[\s_]homonymes|
+                bandeau[\s_]standard[\s_]pour[\s_]page[\s_]d'homonymie|
+                batailles[\s_]homonymes|
+                cantons[\s_]homonymes|
+                communes[\s_]françaises[\s_]homonymes|
                 disambig|
-                films[ _]homonymes|
-                gouvernements[ _]homonymes|
-                guerres[ _]homonymes|
+                films[\s_]homonymes|
+                gouvernements[\s_]homonymes|
+                guerres[\s_]homonymes|
                 homonyme|
                 homonymie|
                 hydronymie|
                 internationalisation|
                 isomérie|
-                lieux[ _]homonymes|
-                monastères[ _]homonymes|
+                lieux[\s_]homonymes|
+                monastères[\s_]homonymes|
                 paronymie|
                 patronyme|
                 patronymie|
-                personnes[ _]homonymes|
-                place[ _]ou[ _]square[ _]homonyme|
+                personnes[\s_]homonymes|
+                place[\s_]ou[\s_]square[\s_]homonyme|
                 portail|
-                prieurés[ _]homonymes|
-                prénoms[ _]homonymes|
-                rues[ _]homonymes|
-                saints[ _]homonymes|
+                prieurés[\s_]homonymes|
+                prénoms[\s_]homonymes|
+                rues[\s_]homonymes|
+                saints[\s_]homonymes|
                 sigle|
-                surnoms[ _]homonymes|
-                titres[ _]homonymes|
+                surnoms[\s_]homonymes|
+                titres[\s_]homonymes|
                 toponymie|
-                unités[ _]homonymes|
-                villes[ _]homonymes|
-                voir[ _]homonymes|
-                édifices[ _]religieux[ _]homonymes
+                unités[\s_]homonymes|
+                villes[\s_]homonymes|
+                voir[\s_]homonymes|
+                édifices[\s_]religieux[\s_]homonymes
             )").unwrap(),
         }
     }
