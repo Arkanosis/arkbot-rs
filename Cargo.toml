@@ -21,6 +21,7 @@ edition = "2018"
 bzip2 = "0.4"
 docopt = "1.1"
 quick-xml = "0.20"
+regex = "1.4"
 reqwest = { version = "0.10", features = ["blocking"] }
 serde = "1.0"
 serde_derive = "1.0"

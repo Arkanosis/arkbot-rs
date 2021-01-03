@@ -9,7 +9,7 @@ pub fn version() -> &'static str {
 pub fn run() {
     let mut processors: Vec<Box<dyn processors::Process>> = Vec::new();
     processors.push(Box::new(processors::Commercial::new()));
-    processors.push(Box::new(processors::Debug::new()));
+    //processors.push(Box::new(processors::Debug::new()));
     processors.push(Box::new(processors::Empty::new()));
     processors.push(Box::new(processors::Impasse::new()));
     processors.push(Box::new(processors::LastEdit::new()));

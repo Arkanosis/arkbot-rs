@@ -5,16 +5,18 @@ use quick_xml::events::Event;
 use std::io::BufRead;
 
 enum Tag {
-    Title,
-    Text,
-    UserName,
+    Namespace,
     Other,
+    Text,
+    Title,
+    UserName,
 }
 
 pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut callback: Callback) {
     let mut xml_reader = quick_xml::Reader::from_reader(stream);
     let mut buffer = Vec::new();
     let mut current_tag = Tag::Other;
+    let mut current_namespace = 0;
     let mut current_title: Option<String> = None;
     let mut current_text: Option<String> = None;
     let mut current_target: Option<String> = None;
@@ -40,25 +42,24 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
             },
             Ok(Event::Start(ref event)) => {
                 match event.name() {
-                    b"title" => current_tag = Tag::Title,
-                    b"text" => current_tag = Tag::Text,
                     b"ip" => current_tag = Tag::UserName,
+                    b"ns" => current_tag = Tag::Namespace,
+                    b"text" => current_tag = Tag::Text,
+                    b"title" => current_tag = Tag::Title,
                     b"username" => current_tag = Tag::UserName,
                     _ => current_tag = Tag::Other,
                 }
             },
             Ok(Event::End(ref event)) => {
                 match event.name() {
-                    b"title" => current_tag = Tag::Other,
-                    b"text" => current_tag = Tag::Other,
-                    b"ip" => current_tag = Tag::Other,
-                    b"username" => current_tag = Tag::Other,
                     b"page" => {
                         let page = wiki::Page {
+                            namespace: current_namespace,
                             title: current_title.unwrap(),
                             text: current_text,
                             target: current_target,
                         };
+                        current_namespace = 0;
                         current_title = None;
                         current_text = None;
                         current_target = None;
@@ -70,6 +71,14 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
             }
             Ok(Event::Text(ref event)) => {
                 match current_tag {
+                    Tag::Namespace => {
+                        match event.unescaped() {
+                            Ok(ref buffer) => {
+                                current_namespace = std::str::from_utf8(buffer).unwrap().parse().unwrap();
+                            }
+                            Err(_) => (), // ignore encoding error in the dump
+                        }
+                    },
                     Tag::Title => {
                         match event.unescaped() {
                             Ok(ref buffer) => {
