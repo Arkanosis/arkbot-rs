@@ -41,19 +41,16 @@ impl Commercial {
 impl processors::Process for Commercial {
     fn process(&mut self, page: &wiki::Page) {
         if page.namespace == 0 {
-            match page.target {
-                None => {
-                    if let Some(text) = &page.text {
-                        let text = self.ignore.replace_all(&text, "");
-                        for c in "Ⓡ®℗™℠".chars() {
-                            if text.contains(c) {
-                                self.titles.push(page.title.to_string());
-                                return;
-                            }
+            if page.target == None {
+                if let Some(text) = &page.text {
+                    let text = self.ignore.replace_all(&text, "");
+                    for c in "Ⓡ®℗™℠".chars() {
+                        if text.contains(c) {
+                            self.titles.push(page.title.to_string());
+                            return;
                         }
                     }
-                },
-                _ => (),
+                }
             }
         }
     }

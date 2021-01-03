@@ -35,19 +35,16 @@ impl Empty {
 
 impl processors::Process for Empty {
     fn process(&mut self, page: &wiki::Page) {
-        match page.target {
-            None => {
-                if !self.ignore.contains(&page.title) {
-                    if let Some(text) = &page.text {
-                        if self.empty.is_match(&text) {
-                            self.titles.push(page.title.to_string());
-                        }
-                    } else {
+        if page.target == None {
+            if !self.ignore.contains(&page.title) {
+                if let Some(text) = &page.text {
+                    if self.empty.is_match(&text) {
                         self.titles.push(page.title.to_string());
                     }
+                } else {
+                    self.titles.push(page.title.to_string());
                 }
-            },
-            _ => (),
+            }
         }
     }
     fn write_to_file(&mut self) {

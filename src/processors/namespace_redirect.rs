@@ -59,15 +59,12 @@ fn has_namespace(title: &String) -> bool {
 
 impl processors::Process for NamespaceRedirect {
     fn process(&mut self, page: &wiki::Page) {
-        match page.target {
-            Some(ref target) => {
-                if !page.title.starts_with("P:") &&
-                    has_namespace(target) &&
-                    !has_namespace(&page.title) {
-                    self.titles.push(page.title.to_string());
-                }
-            },
-            _ => (),
+        if let Some(target) = &page.target {
+            if page.namespace == 0 &&
+               !page.title.starts_with("P:") &&
+               has_namespace(&target) {
+                self.titles.push(page.title.to_string());
+            }
         }
     }
     fn write_to_file(&mut self) {
