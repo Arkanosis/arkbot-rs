@@ -22,6 +22,7 @@ impl Commercial {
             titles: Vec::new(),
             ignore: Regex::new(r"(?imsx)
                 # references
+                <ref[^>]*/\s*>|
                 <ref[^>]*>.*?</ref>|
 
                 # images in templates
