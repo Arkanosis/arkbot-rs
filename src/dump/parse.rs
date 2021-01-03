@@ -8,6 +8,7 @@ enum Tag {
     Namespace,
     Other,
     Text,
+    Timestamp,
     Title,
     UserName,
 }
@@ -20,6 +21,8 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
     let mut current_title: Option<String> = None;
     let mut current_text: Option<String> = None;
     let mut current_target: Option<String> = None;
+    let mut current_username: Option<String> = None;
+    let mut current_timestamp: Option<String> = None;
     loop {
         match xml_reader.read_event(&mut buffer) {
             Ok(Event::Empty(ref event)) => {
@@ -45,6 +48,7 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
                     b"ip" => current_tag = Tag::UserName,
                     b"ns" => current_tag = Tag::Namespace,
                     b"text" => current_tag = Tag::Text,
+                    b"timestamp" => current_tag = Tag::Timestamp,
                     b"title" => current_tag = Tag::Title,
                     b"username" => current_tag = Tag::UserName,
                     _ => current_tag = Tag::Other,
@@ -58,11 +62,15 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
                             title: current_title.unwrap(),
                             text: current_text,
                             target: current_target,
+                            username: current_username,
+                            timestamp: current_timestamp,
                         };
                         current_namespace = 0;
                         current_title = None;
                         current_text = None;
                         current_target = None;
+                        current_username = None;
+                        current_timestamp = None;
                         callback(&page);
                         current_tag = Tag::Other;
                     },
@@ -79,14 +87,6 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
                             Err(_) => (), // ignore encoding error in the dump
                         }
                     },
-                    Tag::Title => {
-                        match event.unescaped() {
-                            Ok(ref buffer) => {
-                                current_title = Some(std::str::from_utf8(buffer).unwrap().to_string());
-                            }
-                            Err(_) => (), // ignore encoding error in the dump
-                        }
-                    },
                     Tag::Text => {
                         match event.unescaped() {
                             Ok(ref buffer) => {
@@ -95,10 +95,26 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
                             Err(_) => (), // ignore encoding error in the dump
                         }
                     },
+                    Tag::Timestamp => {
+                        match event.unescaped() {
+                            Ok(ref buffer) => {
+                                current_timestamp = Some(std::str::from_utf8(buffer).unwrap().to_string());
+                            }
+                            Err(_) => (), // ignore encoding error in the dump
+                        }
+                    },
+                    Tag::Title => {
+                        match event.unescaped() {
+                            Ok(ref buffer) => {
+                                current_title = Some(std::str::from_utf8(buffer).unwrap().to_string());
+                            }
+                            Err(_) => (), // ignore encoding error in the dump
+                        }
+                    },
                     Tag::UserName => {
                         match event.unescaped() {
                             Ok(ref buffer) => {
-                                // TODO
+                                current_username = Some(std::str::from_utf8(buffer).unwrap().to_string());
                             },
                             Err(_) => (), // ignore encoding error in the dump
                         }
