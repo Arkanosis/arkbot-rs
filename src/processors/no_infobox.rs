@@ -33,8 +33,8 @@ impl NoInfobox {
                 guerres[\s_]homonymes|
                 homonyme|
                 homonymie|
-                infobox|
                 hydronymie|
+                infobox|
                 internationalisation|
                 isomérie|
                 lieux[\s_]homonymes|
