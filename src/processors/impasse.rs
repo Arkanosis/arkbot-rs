@@ -60,7 +60,6 @@ impl Impasse {
 		    toponymie|
 		    unités[\s_]homonymes|
 		    villes[\s_]homonymes|
-		    voir[\s_]homonymes|
 		    édifices[\s_]religieux[\s_]homonymes
                 )
             ").unwrap(),
