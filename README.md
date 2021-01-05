@@ -1,4 +1,4 @@
-# arkbot-rs [![](https://img.shields.io/crates/v/arkbot-rs.svg)](https://crates.io/crates/arkbot-rs) [![License](https://img.shields.io/badge/license-ISC-blue.svg)](/LICENSE) [![Build status](https://travis-ci.org/Arkanosis/arkbot-rs.svg?branch=master)](https://travis-ci.org/Arkanosis/arkbot-rs)
+# arkbot-rs [![](https://img.shields.io/crates/v/arkbot.svg)](https://crates.io/crates/arkbot) [![License](https://img.shields.io/badge/license-ISC-blue.svg)](/LICENSE) [![Build status](https://travis-ci.org/Arkanosis/arkbot-rs.svg?branch=master)](https://travis-ci.org/Arkanosis/arkbot-rs)
 
 **arkbot-rs** is Rust rewrite (and complete redesign) of Arkanosis' Wikipedia bot.
 
