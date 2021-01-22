@@ -14,6 +14,12 @@ use std::{
 pub struct NoInfobox {
     titles: Vec<String>,
     infobox: Regex,
+
+    music_titles: Vec<String>,
+    music: Regex,
+
+    actor_titles: Vec<String>,
+    actor: Regex,
 }
 
 impl NoInfobox {
@@ -61,7 +67,30 @@ impl NoInfobox {
                 villes[\s_]homonymes|
                 édifices[\s_]religieux[\s_]homonymes
             )").unwrap(),
+
+            music_titles: Vec::new(),
+            music: Regex::new(r"(?imsx)(?:
+                cat[ée]gor(y|ie)\s*?:\s*?album[\s_]musical
+            )").unwrap(),
+
+            actor_titles: Vec::new(),
+            actor: Regex::new(r"(?imsx)(?:
+                cat[ée]gor(y|ie)\s*?:\s*?act(eur|rice)
+            )").unwrap(),
         }
+    }
+}
+
+fn write_titles(titles: &mut Vec<String>, output_file: &str) {
+    titles.sort();
+    if let Ok(file) = File::create(output_file) {
+        let mut writer = BufWriter::new(file);
+        for title in titles.iter() {
+            writer.write(title.as_bytes()).unwrap();
+            writer.write(b"\n").unwrap();
+        }
+    } else {
+        eprintln!("arkbot: unable to create file: '{}'", output_file);
     }
 }
 
@@ -72,22 +101,20 @@ impl processors::Process for NoInfobox {
                 if let Some(text) = &page.text {
                     if !self.infobox.is_match(&text) {
                         self.titles.push(page.title.to_string());
+                        if self.music.is_match(&text) {
+                            self.music_titles.push(page.title.to_string());
+                        }
+                        if self.actor.is_match(&text) {
+                            self.actor_titles.push(page.title.to_string());
+                        }
                     }
                 }
             }
         }
     }
     fn write_to_file(&mut self) {
-        self.titles.sort();
-        const output_file: &str = "data/frwiki-no_infobox-latest.txt";
-        if let Ok(file) = File::create(output_file) {
-            let mut writer = BufWriter::new(file);
-            for title in self.titles.iter() {
-                writer.write(title.as_bytes()).unwrap();
-                writer.write(b"\n").unwrap();
-            }
-        } else {
-            eprintln!("arkbot: unable to create file: '{}'", output_file);
-        }
+	write_titles(&mut self.titles, "data/frwiki-no_infobox-latest.txt");
+	write_titles(&mut self.music_titles, "data/frwiki-no_infobox_music-latest.txt");
+	write_titles(&mut self.actor_titles, "data/frwiki-no_infobox_actor-latest.txt");
     }
 }
