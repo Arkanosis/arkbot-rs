@@ -11,7 +11,7 @@ pub fn run() {
     processors.push(Box::new(processors::Commercial::new()));
     //processors.push(Box::new(processors::Debug::new()));
     processors.push(Box::new(processors::Empty::new()));
-    processors.push(Box::new(processors::Impasse::new()));
+    //processors.push(Box::new(processors::Impasse::new()));
     processors.push(Box::new(processors::LastEdit::new()));
     processors.push(Box::new(processors::NamespaceRedirect::new()));
     processors.push(Box::new(processors::NoInfobox::new()));
