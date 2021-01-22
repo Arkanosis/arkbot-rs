@@ -28,15 +28,15 @@ impl NoInfobox {
             titles: Vec::new(),
             infobox: Regex::new(r"(?imsx)\{\{(?:
                 abbayes[\s_]homonymes|
-                années\}\}|
+                années|
                 arrondissements[\s_]homonymes|
                 bandeau[\s_]standard[\s_]pour[\s_]page[\s_]d'homonymie|
                 batailles[\s_]homonymes|
                 cantons[\s_]homonymes|
-                chronologie musique\}\}|
-                chronologie santé et médecine\}\}|
+                chronologie musique|
+                chronologie santé et médecine|
                 communes[\s_]françaises[\s_]homonymes|
-                cycling race/stageinfobox\}\}|
+                cycling race/stageinfobox|
                 disambig|
                 films[\s_]homonymes|
                 gouvernements[\s_]homonymes|
@@ -49,7 +49,7 @@ impl NoInfobox {
                 isomérie|
                 lieux[\s_]homonymes|
                 monastères[\s_]homonymes|
-                palette chronologie croisades\}\}|
+                palette chronologie croisades|
                 paronymie|
                 patronyme|
                 patronymie|
