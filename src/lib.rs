@@ -17,14 +17,17 @@ pub fn run() {
     processors.push(Box::new(processors::NoInfobox::new()));
     processors.push(Box::new(processors::NoPortal::new()));
 
-    let mut dump_stream = dump::download("frwiki/latest/frwiki-latest-pages-articles.xml");
-    dump::parse(dump_stream.as_mut(), |page| {
+    dump::monitor("frwiki", "pages-articles.xml.bz2", |date, url| {
+        println!("Processing dump for {}", &date);
+        let mut dump_stream = dump::download(url);
+        dump::parse(dump_stream.as_mut(), |page| {
+            for processor in processors.iter_mut() {
+                processor.process(&page);
+            }
+        });
+
         for processor in processors.iter_mut() {
-            processor.process(&page);
+            processor.write_to_file();
         }
     });
-
-    for processor in processors.iter_mut() {
-        processor.write_to_file();
-    }
 }
