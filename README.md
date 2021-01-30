@@ -31,7 +31,7 @@ Run `cargo build --release` in your working copy.
 ```
 systemctl --user link systemd/arkbot.service
 systemctl --user daemon-reload
-systemctl --user enable --now arkbot.service
+systemctl --user enable --now arkbot
 ```
 
 ## Contributing and reporting bugs

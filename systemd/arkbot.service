@@ -1,5 +1,5 @@
 [Unit]
-Description=Arkbot
+Description=Arkanosis' Wikipedia bot
 
 [Service]
 Type=simple
