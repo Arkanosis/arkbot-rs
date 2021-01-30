@@ -26,6 +26,14 @@ Options:
 
 Run `cargo build --release` in your working copy.
 
+## Enabling as a systemd service
+
+```
+systemctl --user link systemd/arkbot.service
+systemctl --user daemon-reload
+systemctl --user enable --now arkbot.service
+```
+
 ## Contributing and reporting bugs
 
 Contributions are welcome through [GitHub pull requests](https://github.com/Arkanosis/arkbot-rs/pulls).

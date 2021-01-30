@@ -1,0 +1,9 @@
+[Unit]
+Description=Arkbot
+
+[Service]
+Type=simple
+ExecStart=arkbot
+
+[Install]
+WantedBy=default.target
