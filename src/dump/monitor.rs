@@ -3,7 +3,7 @@ use quick_xml::events::Event;
 use std::fmt::Write;
 
 pub fn monitor<Callback: FnMut(&str, &str) -> ()>(wiki: &str, dump: &str, mut callback: Callback) {
-    let mut url = format!("https://dumps.wikimedia.org/{}/latest/{}-latest-{}-rss.xml", wiki, wiki, dump);
+    let url = format!("https://dumps.wikimedia.org/{}/latest/{}-latest-{}-rss.xml", wiki, wiki, dump);
 
     // TODO loop here and only call back when the date has changed
     // TODO wait for X time (additional parameter?) before retrying
