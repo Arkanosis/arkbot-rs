@@ -29,7 +29,7 @@ impl processors::Process for Debug {
             },
         }
     }
-    fn write_to_file(&mut self) {
+    fn write_to_file(&mut self, _output_directory: &str) {
         // Nothing
     }
 }

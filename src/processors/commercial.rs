@@ -54,17 +54,17 @@ impl processors::Process for Commercial {
             }
         }
     }
-    fn write_to_file(&mut self) {
+    fn write_to_file(&mut self, output_directory: &str) {
         self.titles.sort();
-        const output_file: &str = "data/frwiki-commercials-latest.txt";
-        if let Ok(file) = File::create(output_file) {
+        let output_file = format!("{}/frwiki-commercials-latest.txt", output_directory);
+        if let Ok(file) = File::create(&output_file) {
             let mut writer = BufWriter::new(file);
             for title in self.titles.iter() {
                 writer.write(title.as_bytes()).unwrap();
                 writer.write(b"\n").unwrap();
             }
         } else {
-            eprintln!("arkbot: unable to create file: '{}'", output_file);
+            eprintln!("arkbot: unable to create file: '{}'", &output_file);
         }
     }
 }

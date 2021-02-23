@@ -11,7 +11,7 @@ use crate::wiki;
 
 pub trait Process {
     fn process(&mut self, page: &wiki::Page);
-    fn write_to_file(&mut self);
+    fn write_to_file(&mut self, output_directory: &str);
 }
 
 pub use commercial::Commercial;

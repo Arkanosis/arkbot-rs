@@ -81,16 +81,17 @@ impl NoInfobox {
     }
 }
 
-fn write_titles(titles: &mut Vec<String>, output_file: &str) {
+fn write_titles(titles: &mut Vec<String>, output_directory: &str, output_file: &str) {
     titles.sort();
-    if let Ok(file) = File::create(output_file) {
+    let output_file = format!("{}/{}", output_directory, output_file);
+    if let Ok(file) = File::create(&output_file) {
         let mut writer = BufWriter::new(file);
         for title in titles.iter() {
             writer.write(title.as_bytes()).unwrap();
             writer.write(b"\n").unwrap();
         }
     } else {
-        eprintln!("arkbot: unable to create file: '{}'", output_file);
+        eprintln!("arkbot: unable to create file: '{}'", &output_file);
     }
 }
 
@@ -112,9 +113,9 @@ impl processors::Process for NoInfobox {
             }
         }
     }
-    fn write_to_file(&mut self) {
-	write_titles(&mut self.titles, "data/frwiki-no_infobox-latest.txt");
-	write_titles(&mut self.music_titles, "data/frwiki-no_infobox_music-latest.txt");
-	write_titles(&mut self.actor_titles, "data/frwiki-no_infobox_actor-latest.txt");
+    fn write_to_file(&mut self, output_directory: &str) {
+	write_titles(&mut self.titles, output_directory, "frwiki-no_infobox-latest.txt");
+	write_titles(&mut self.music_titles, output_directory, "frwiki-no_infobox_music-latest.txt");
+	write_titles(&mut self.actor_titles, output_directory, "frwiki-no_infobox_actor-latest.txt");
     }
 }
