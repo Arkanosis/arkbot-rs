@@ -27,6 +27,8 @@ impl Empty {
         };
         result.ignore.insert("MediaWiki:Anonnotice".to_string());
         result.ignore.insert("MediaWiki:Excontentauthor".to_string());
+        result.ignore.insert("MediaWiki:Ext-quicksurveys-affinity-survey-description".to_string());
+        result.ignore.insert("MediaWiki:Préférences des Gadgets".to_string());
         result.ignore.insert("MediaWiki:Reader-demographics-1-description".to_string());
         result.ignore.insert("MediaWiki:Sitenotice".to_string());
         result
