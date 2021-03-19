@@ -2,13 +2,34 @@ mod dump;
 mod processors;
 mod wiki;
 
+use serde_derive::{
+    Deserialize,
+    Serialize,
+};
+
+#[derive(Deserialize, Serialize)]
+struct Config {
+    output_directory: String,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        let mut output_directory = std::env::temp_dir();
+        output_directory.push(".arkbot-data");
+        Self {
+            output_directory: output_directory.to_str().unwrap().to_owned(),
+        }
+    }
+}
+
 pub fn version() -> &'static str {
     return option_env!("CARGO_PKG_VERSION").unwrap_or("unknown");
 }
 
 pub fn run() {
-    let output_directory = "/tmp/.arkbot-data";
-    std::fs::create_dir_all(&output_directory).expect("Unable to create output directory");
+    let config: Config = confy::load("arkbot").unwrap();
+    confy::store("arkbot", &config).unwrap();
+    std::fs::create_dir_all(&config.output_directory).expect("Unable to create output directory");
 
     let mut processors: Vec<Box<dyn processors::Process>> = Vec::new();
     processors.push(Box::new(processors::Commercial::new()));
@@ -31,10 +52,10 @@ pub fn run() {
         });
 
         for processor in processors.iter_mut() {
-	    // TODO publish to wiki instead of writing to file
-            processor.write_to_file(&output_directory);
+            // TODO publish to wiki instead of writing to file
+            processor.write_to_file(&config.output_directory);
         }
 
-	// TODO clear processors (ie. forget about previous dump)
+        // TODO clear processors (ie. forget about previous dump)
     });
 }
