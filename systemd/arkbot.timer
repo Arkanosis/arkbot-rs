@@ -1,0 +1,8 @@
+[Unit]
+Description=Hourly start of Arkanosis' Wikipedia bot
+
+[Timer]
+OnCalendar=hourly
+
+[Install]
+WantedBy=timers.target

@@ -26,12 +26,12 @@ Options:
 
 Run `cargo build --release` in your working copy.
 
-## Enabling as a systemd service
+## Enabling as a systemd service, run hourly
 
 ```
-systemctl --user link systemd/arkbot.service
+systemctl --user link systemd/arkbot.service systemd/arkbot.timer
 systemctl --user daemon-reload
-systemctl --user enable --now arkbot
+systemctl --user enable --now arkbot.timer
 ```
 
 ## Contributing and reporting bugs
