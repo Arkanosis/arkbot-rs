@@ -7,6 +7,12 @@ use serde_derive::{
     Serialize,
 };
 
+use std::{
+    fs::File,
+    io::BufReader,
+    io::BufWriter,
+};
+
 #[derive(Deserialize, Serialize)]
 struct Config {
     output_directory: String,
@@ -22,13 +28,39 @@ impl Default for Config {
     }
 }
 
+#[derive(Serialize, Deserialize)]
+struct State {
+    last_date: String,
+}
+
 pub fn version() -> &'static str {
     return option_env!("CARGO_PKG_VERSION").unwrap_or("unknown");
 }
 
 pub fn run() {
-    let config: Config = confy::load("arkbot").unwrap();
-    confy::store("arkbot", &config).unwrap();
+    let directories = directories_next::ProjectDirs::from("net", "Arkanosis", "arkbot").unwrap();
+
+    let config_directory = directories.config_dir();
+    std::fs::create_dir_all(&config_directory).expect("Unable to create configuration directory");
+    let mut config_path = config_directory.to_owned();
+    config_path.push("config.toml");
+    let config: Config = confy::load_path(&config_path).unwrap();
+
+    let cache_directory = directories.cache_dir();
+    std::fs::create_dir_all(&cache_directory).expect("Unable to create cache directory");
+    let mut state_path = cache_directory.to_owned();
+    state_path.push("state.json");
+    let mut state = {
+        if let Ok(state_file) = File::open(&state_path) {
+            let state_reader = BufReader::new(state_file);
+            serde_json::from_reader(state_reader).unwrap()
+        } else {
+            State {
+                last_date: "".to_string()
+            }
+        }
+    };
+
     std::fs::create_dir_all(&config.output_directory).expect("Unable to create output directory");
 
     let mut processors: Vec<Box<dyn processors::Process>> = Vec::new();
@@ -42,6 +74,10 @@ pub fn run() {
     processors.push(Box::new(processors::NoPortal::new()));
 
     dump::monitor("frwiki", "pages-articles.xml.bz2", |date, url| {
+        if date == state.last_date {
+            return;
+        }
+
         println!("Processing dump for {}", &date);
 
         let mut dump_stream = dump::download(url);
@@ -57,5 +93,12 @@ pub fn run() {
         }
 
         // TODO clear processors (ie. forget about previous dump)
+
+        state.last_date = date.to_string();
     });
+
+    if let Ok(state_file) = File::create(&state_path) {
+        let state_writer = BufWriter::new(state_file);
+        serde_json::to_writer(state_writer, &state).unwrap();
+    }
 }
