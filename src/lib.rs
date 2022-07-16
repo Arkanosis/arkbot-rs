@@ -3,6 +3,8 @@ mod dump;
 mod processors;
 mod wiki;
 
+use directories_next::ProjectDirs;
+
 use serde_derive::{
     Deserialize,
     Serialize,
@@ -12,10 +14,13 @@ use std::{
     fs::File,
     io::BufReader,
     io::BufWriter,
+    path::PathBuf,
 };
 
 #[derive(Deserialize, Serialize)]
 struct Config {
+    login: Option<String>,
+    password: Option<String>,
     output_directory: String,
 }
 
@@ -24,6 +29,8 @@ impl Default for Config {
         let mut output_directory = std::env::temp_dir();
         output_directory.push(".arkbot-data");
         Self {
+            login: None,
+            password: None,
             output_directory: output_directory.to_str().unwrap().to_owned(),
         }
     }
@@ -38,20 +45,26 @@ pub fn version() -> &'static str {
     return option_env!("CARGO_PKG_VERSION").unwrap_or("unknown");
 }
 
-pub fn run() {
-    let directories = directories_next::ProjectDirs::from("net", "Arkanosis", "arkbot").unwrap();
+fn get_directories() -> ProjectDirs {
+    ProjectDirs::from("net", "Arkanosis", "arkbot").unwrap()
+}
 
+fn load_config() -> Config {
+    let directories = get_directories();
     let config_directory = directories.config_dir();
     std::fs::create_dir_all(&config_directory).expect("Unable to create configuration directory");
     let mut config_path = config_directory.to_owned();
     config_path.push("config.toml");
-    let config: Config = confy::load_path(&config_path).unwrap();
+    confy::load_path(&config_path).unwrap()
+}
 
+fn load_state() -> (State, PathBuf) {
+    let directories = get_directories();
     let cache_directory = directories.cache_dir();
     std::fs::create_dir_all(&cache_directory).expect("Unable to create cache directory");
     let mut state_path = cache_directory.to_owned();
     state_path.push("state.json");
-    let mut state = {
+    let state = {
         if let Ok(state_file) = File::open(&state_path) {
             let state_reader = BufReader::new(state_file);
             serde_json::from_reader(state_reader).unwrap()
@@ -61,6 +74,11 @@ pub fn run() {
             }
         }
     };
+    (state, state_path)
+}
+
+pub fn run() {
+    let config = load_config();
 
     std::fs::create_dir_all(&config.output_directory).expect("Unable to create output directory");
 
@@ -73,6 +91,8 @@ pub fn run() {
     processors.push(Box::new(processors::NamespaceRedirect::new()));
     processors.push(Box::new(processors::NoInfobox::new()));
     processors.push(Box::new(processors::NoPortal::new()));
+
+    let (mut state, state_path) = load_state();
 
     dump::monitor("frwiki", "pages-articles.xml.bz2", |date, url| {
         if date == state.last_date {
@@ -105,12 +125,18 @@ pub fn run() {
 }
 
 pub fn test() {
-    let mut bot = bot::Bot::new("http://localhost:8080", "/w");
-    if bot.login("LOGIN", "PASSWORD") {
-        if !bot.edit_page("User:Arktest/test", "Testing arkbot-rs", "Hello world!") {
-            eprintln!("Unable to edit page");
+    let config = load_config();
+
+    if let (Some(login), Some(password)) = (config.login, config.password) {
+        let mut bot = bot::Bot::new("http://localhost:8080", "/w");
+        if bot.login(&login, &password) {
+            if !bot.edit_page("User:Arktest/test", "Testing arkbot-rs", "Hello world!") {
+                eprintln!("Unable to edit page");
+            }
+        } else {
+            eprintln!("Unable to log in");
         }
     } else {
-        eprintln!("Unable to log in");
+        eprintln!("Missing login or password in configuration");
     }
 }
