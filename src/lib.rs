@@ -1,3 +1,4 @@
+mod bot;
 mod dump;
 mod processors;
 mod wiki;
@@ -100,5 +101,16 @@ pub fn run() {
     if let Ok(state_file) = File::create(&state_path) {
         let state_writer = BufWriter::new(state_file);
         serde_json::to_writer(state_writer, &state).unwrap();
+    }
+}
+
+pub fn test() {
+    let mut bot = bot::Bot::new("http://localhost:8080", "/w");
+    if bot.login("LOGIN", "PASSWORD") {
+        if !bot.edit_page("User:Arktest/test", "Testing arkbot-rs", "Hello world!") {
+            eprintln!("Unable to edit page");
+        }
+    } else {
+        eprintln!("Unable to log in");
     }
 }

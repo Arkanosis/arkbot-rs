@@ -2,6 +2,7 @@ use serde_derive::Deserialize;
 
 const USAGE: &str = "
 Usage: arkbot
+       arkbot test
        arkbot -h | --help
        arkbot --version
 
@@ -12,6 +13,7 @@ Options:
 
 #[derive(Deserialize)]
 struct Args {
+    cmd_test: bool,
     flag_version: bool,
 }
 
@@ -28,6 +30,8 @@ fn main() {
 
     if args.flag_version {
         println!("arkbot v{}", arkbot::version());
+    } else if args.cmd_test {
+        arkbot::test();
     } else {
         arkbot::run();
     }
