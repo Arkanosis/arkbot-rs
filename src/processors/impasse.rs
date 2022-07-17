@@ -3,14 +3,6 @@ use crate::wiki;
 
 use regex::Regex;
 
-use std::{
-    fs::File,
-    io::{
-        BufWriter,
-        Write,
-    },
-};
-
 pub struct Impasse {
     titles: Vec<String>,
     link: Regex,
@@ -79,17 +71,10 @@ impl processors::Process for Impasse {
             }
         }
     }
-    fn write_to_file(&mut self, output_directory: &str) {
+    fn finalize(&mut self) {
         self.titles.sort();
-        let output_file = format!("{}/frwiki-impasse-latest.txt", output_directory);
-        if let Ok(file) = File::create(&output_file) {
-            let mut writer = BufWriter::new(file);
-            for title in self.titles.iter() {
-                writer.write(title.as_bytes()).unwrap();
-                writer.write(b"\n").unwrap();
-            }
-        } else {
-            eprintln!("arkbot: unable to create file: '{}'", &output_file);
-        }
+    }
+    fn lines(&self) -> &Vec<String> {
+        &self.titles
     }
 }

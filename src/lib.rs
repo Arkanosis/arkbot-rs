@@ -1,6 +1,7 @@
 mod bot;
 mod dump;
 mod processors;
+mod publishers;
 mod wiki;
 
 use directories_next::ProjectDirs;
@@ -109,8 +110,8 @@ pub fn run() {
         });
 
         for processor in processors.iter_mut() {
-            // TODO publish to wiki instead of writing to file
-            processor.write_to_file(&config.output_directory);
+            processor.finalize();
+            // TODO publish to wiki
         }
 
         // TODO clear processors (ie. forget about previous dump)
@@ -129,10 +130,42 @@ pub fn test() {
 
     if let (Some(login), Some(password)) = (config.login, config.password) {
         let mut bot = bot::Bot::new("http://localhost:8080", "/w");
+
         if bot.login(&login, &password) {
-            if !bot.edit_page("User:Arktest/test", "Testing arkbot-rs", "Hello world!") {
-                eprintln!("Unable to edit page");
-            }
+
+	    let mut publishers: Vec<Box<dyn publishers::Publish>> = Vec::new();
+	    publishers.push(Box::new(publishers::Wiki::new(&bot,
+		"Utilisateur:Arkbot/Caractères spéciaux à vérifier",
+		"Caractères spéciaux à vérifier"
+	    )));
+	    //publishers.push(Box::new(publishers::Debug::new()));
+	    publishers.push(Box::new(publishers::Wiki::new(&bot,
+		"Projet:Pages_vides/liste_des_pages_vides",
+		"Pages vides"
+	    )));
+	    //publishers.push(Box::new(publishers::Wiki::new(&bot,
+	    //    "Projet:Pages en impasse/liste des pages en impasse",
+	    //    "Pages en impasse"
+	    //)));
+	    publishers.push(Box::new(publishers::Wiki::new(&bot,
+		"Projet:Pages les moins modifiées",
+		"Pages les moins modifiées"
+	    )));
+	    publishers.push(Box::new(publishers::Wiki::new(&bot,
+		"Utilisateur:Arkbot/Pages redirigeant hors de l'espace de nom principal",
+		"Pages redirigeant hors de l'espace de nom principal"
+	    )));
+	    publishers.push(Box::new(publishers::Wiki::new(&bot,
+		"Projet:Articles sans infobox",
+		"Articles sans infobox"
+	    )));
+	    publishers.push(Box::new(publishers::Wiki::new(&bot,
+		"Projet:Articles sans portail",
+		"Articles sans portail"
+	    )));
+
+	    // let publisher = publishers::Wiki::new(&bot, "User:Arktest/test", "Testing arkbot-rs");
+	    // publisher.publish(&vec!["foo".to_string(), "bar".to_string(), "baz".to_string()]);
         } else {
             eprintln!("Unable to log in");
         }

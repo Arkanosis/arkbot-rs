@@ -3,14 +3,7 @@ use crate::wiki;
 
 use regex::Regex;
 
-use std::{
-    cmp::Ordering,
-    fs::File,
-    io::{
-        BufWriter,
-        Write,
-    },
-};
+use std::cmp::Ordering;
 
 struct Edit {
     title: String,
@@ -21,6 +14,7 @@ struct Edit {
 pub struct LastEdit {
     edits: Vec<Edit>,
     homonymy: Regex,
+    titles: Vec<String>,
 }
 
 impl LastEdit {
@@ -62,6 +56,7 @@ impl LastEdit {
                 villes[\s_]homonymes|
                 édifices[\s_]religieux[\s_]homonymes
             )").unwrap(),
+            titles: Vec::new(),
         }
     }
 }
@@ -86,7 +81,7 @@ impl processors::Process for LastEdit {
             }
         }
     }
-    fn write_to_file(&mut self, output_directory: &str) {
+    fn finalize(&mut self) {
         self.edits.sort_unstable_by(|first_edit, second_edit| {
             match first_edit.timestamp.cmp(&second_edit.timestamp) {
                 Ordering::Equal => first_edit.title.cmp(&second_edit.title),
@@ -94,15 +89,12 @@ impl processors::Process for LastEdit {
                 Ordering::Greater => Ordering::Greater,
             }
         });
-        let output_file = format!("{}/frwiki-last_edit-latest.txt", output_directory);
-        if let Ok(file) = File::create(&output_file) {
-            let mut writer = BufWriter::new(file);
-            for edit in self.edits.iter() {
-                writer.write(format!("{} || FIXME || {} || {} || FIXME", edit.timestamp, edit.title, edit.username).as_bytes()).unwrap();
-                writer.write(b"\n").unwrap();
-            }
-        } else {
-            eprintln!("arkbot: unable to create file: '{}'", &output_file);
-        }
+	for edit in &self.edits {
+	    // TODO FIXME do it properly (lazy?) -- wiki target is "%s — {{a-court|%s}} ({{u\'|%s}})"
+	    self.titles.push(format!("{} || FIXME || {} || {} || FIXME", edit.timestamp, edit.title, edit.username));
+	}
+    }
+    fn lines(&self) -> &Vec<String> {
+        &self.titles
     }
 }

@@ -3,14 +3,6 @@ use crate::wiki;
 
 use regex::Regex;
 
-use std::{
-    fs::File,
-    io::{
-        BufWriter,
-        Write,
-    },
-};
-
 pub struct NoInfobox {
     titles: Vec<String>,
     infobox: Regex,
@@ -81,20 +73,6 @@ impl NoInfobox {
     }
 }
 
-fn write_titles(titles: &mut Vec<String>, output_directory: &str, output_file: &str) {
-    titles.sort();
-    let output_file = format!("{}/{}", output_directory, output_file);
-    if let Ok(file) = File::create(&output_file) {
-        let mut writer = BufWriter::new(file);
-        for title in titles.iter() {
-            writer.write(title.as_bytes()).unwrap();
-            writer.write(b"\n").unwrap();
-        }
-    } else {
-        eprintln!("arkbot: unable to create file: '{}'", &output_file);
-    }
-}
-
 impl processors::Process for NoInfobox {
     fn process(&mut self, page: &wiki::Page) {
         if page.namespace == 0 {
@@ -113,9 +91,12 @@ impl processors::Process for NoInfobox {
             }
         }
     }
-    fn write_to_file(&mut self, output_directory: &str) {
-	write_titles(&mut self.titles, output_directory, "frwiki-no_infobox-latest.txt");
-	write_titles(&mut self.music_titles, output_directory, "frwiki-no_infobox_music-latest.txt");
-	write_titles(&mut self.actor_titles, output_directory, "frwiki-no_infobox_actor-latest.txt");
+    fn finalize(&mut self) {
+        self.titles.sort();
+        self.music_titles.sort();
+        self.actor_titles.sort();
+    }
+    fn lines(&self) -> &Vec<String> {
+        &self.titles
     }
 }

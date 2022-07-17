@@ -2,14 +2,14 @@ use crate::processors;
 use crate::wiki;
 
 pub struct Debug {
-    // Nothing
+    titles: Vec<String>,
 }
 
 impl Debug {
     #[allow(dead_code)]
     pub fn new() -> Self {
         Debug {
-            // Nothing
+            titles: Vec::new(),
         }
     }
 }
@@ -29,7 +29,10 @@ impl processors::Process for Debug {
             },
         }
     }
-    fn write_to_file(&mut self, _output_directory: &str) {
+    fn finalize(&mut self) {
         // Nothing
+    }
+    fn lines(&self) -> &Vec<String> {
+        &self.titles
     }
 }

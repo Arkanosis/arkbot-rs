@@ -11,7 +11,8 @@ use crate::wiki;
 
 pub trait Process {
     fn process(&mut self, page: &wiki::Page);
-    fn write_to_file(&mut self, output_directory: &str);
+    fn finalize(&mut self);
+    fn lines(&self) -> &Vec<String>;
 }
 
 pub use commercial::Commercial;
