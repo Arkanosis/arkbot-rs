@@ -29,9 +29,7 @@ struct TokenResponse {
 
 #[derive(Deserialize)]
 struct Login {
-    lguserid: Option<u32>,
     result: Option<String>,
-    lgusername: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -42,12 +40,6 @@ struct LoginResponse {
 #[derive(Deserialize)]
 struct Edit {
     result: Option<String>,
-    pageid: Option<u32>,
-    title: Option<String>,
-    contentmodel: Option<String>,
-    oldrevid: Option<u32>,
-    newrevid: Option<u32>,
-    newtimestamp: Option<String>,
 }
 
 #[derive(Deserialize)]
