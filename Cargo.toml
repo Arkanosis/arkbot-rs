@@ -15,15 +15,15 @@ license = "ISC"
 keywords = ["wikipedia", "bot"]
 categories = ["bot"]
 
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 bzip2 = "0.4"
-confy = "0.4"
+confy = "0.5"
 directories-next = "2.0"
 docopt = "1.1"
 quick-xml = "0.22"
-regex = "1.5"
+regex = "1.6"
 reqwest = { version = "0.11", features = ["blocking", "cookies", "gzip", "json"] }
 serde = "1.0"
 serde_derive = "1.0"
