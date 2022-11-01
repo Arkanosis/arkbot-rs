@@ -24,15 +24,16 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
     let mut current_username: Option<String> = None;
     let mut current_timestamp: Option<String> = None;
     loop {
-        match xml_reader.read_event(&mut buffer) {
+        match xml_reader.read_event_into(&mut buffer) {
             Ok(Event::Empty(ref event)) => {
-                match event.name() {
+                match event.name().as_ref() {
                     b"redirect" => {
                         for attribute in event.attributes() {
                             match attribute {
                                 Ok(attribute) => {
-                                    if attribute.key == b"title" {
-                                        current_target = Some(std::str::from_utf8(&attribute.unescaped_value().unwrap()).unwrap().to_string());
+                                    if attribute.key.as_ref() == b"title" {
+                                        let escaped_value = attribute.unescape_value();
+                                        current_target = Some(std::str::from_utf8(&escaped_value.unwrap().as_bytes()).unwrap().to_string());
                                     }
                                 }
                                 Err(_) => (), // ignore bad attribute in the dump
@@ -44,7 +45,7 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
                 }
             },
             Ok(Event::Start(ref event)) => {
-                match event.name() {
+                match event.name().as_ref() {
                     b"ip" => current_tag = Tag::UserName,
                     b"ns" => current_tag = Tag::Namespace,
                     b"text" => current_tag = Tag::Text,
@@ -55,7 +56,7 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
                 }
             },
             Ok(Event::End(ref event)) => {
-                match event.name() {
+                match event.name().as_ref() {
                     b"page" => {
                         let page = wiki::Page {
                             namespace: current_namespace,
@@ -78,43 +79,44 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
                 }
             }
             Ok(Event::Text(ref event)) => {
+                let escaped_event = event.unescape();
                 match current_tag {
                     Tag::Namespace => {
-                        match event.unescaped() {
+                        match escaped_event {
                             Ok(ref buffer) => {
-                                current_namespace = std::str::from_utf8(buffer).unwrap().parse().unwrap();
+                                current_namespace = std::str::from_utf8(buffer.as_bytes()).unwrap().parse().unwrap();
                             }
                             Err(_) => (), // ignore encoding error in the dump
                         }
                     },
                     Tag::Text => {
-                        match event.unescaped() {
+                        match escaped_event {
                             Ok(ref buffer) => {
-                                current_text = Some(std::str::from_utf8(buffer).unwrap().to_string());
+                                current_text = Some(std::str::from_utf8(buffer.as_bytes()).unwrap().to_string());
                             }
                             Err(_) => (), // ignore encoding error in the dump
                         }
                     },
                     Tag::Timestamp => {
-                        match event.unescaped() {
+                        match escaped_event {
                             Ok(ref buffer) => {
-                                current_timestamp = Some(std::str::from_utf8(buffer).unwrap().to_string());
+                                current_timestamp = Some(std::str::from_utf8(buffer.as_bytes()).unwrap().to_string());
                             }
                             Err(_) => (), // ignore encoding error in the dump
                         }
                     },
                     Tag::Title => {
-                        match event.unescaped() {
+                        match escaped_event {
                             Ok(ref buffer) => {
-                                current_title = Some(std::str::from_utf8(buffer).unwrap().to_string());
+                                current_title = Some(std::str::from_utf8(buffer.as_bytes()).unwrap().to_string());
                             }
                             Err(_) => (), // ignore encoding error in the dump
                         }
                     },
                     Tag::UserName => {
-                        match event.unescaped() {
+                        match escaped_event {
                             Ok(ref buffer) => {
-                                current_username = Some(std::str::from_utf8(buffer).unwrap().to_string());
+                                current_username = Some(std::str::from_utf8(buffer.as_bytes()).unwrap().to_string());
                             },
                             Err(_) => (), // ignore encoding error in the dump
                         }

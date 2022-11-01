@@ -14,17 +14,18 @@ pub fn monitor<Callback: FnMut(&str, &str) -> ()>(wiki: &str, dump: &str, mut ca
     let mut buffer = Vec::new();
     let mut on_link = false;
     loop {
-        match xml_reader.read_event(&mut buffer) {
+        match xml_reader.read_event_into(&mut buffer) {
             Ok(Event::Start(ref event)) => {
-                if event.name() == b"link" {
+                if event.name().as_ref() == b"link" {
                     on_link = true;
                 }
             },
             Ok(Event::Text(ref event)) => {
                 if on_link {
-                    match event.unescaped() {
+                    let escaped_event = event.unescape();
+                    match escaped_event {
                         Ok(ref buffer) => {
-                            let mut url = std::str::from_utf8(buffer).unwrap().to_string();
+                            let mut url = std::str::from_utf8(buffer.as_bytes()).unwrap().to_string();
                             let date = url.rsplitn(2, "/").next().unwrap().to_string();
                             write!(&mut url, "/{}-{}-{}", wiki, &date, dump);
                             callback(&date, &url);
