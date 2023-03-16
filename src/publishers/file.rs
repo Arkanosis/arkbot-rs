@@ -21,7 +21,7 @@ impl File {
 }
 
 impl publishers::Publish for File {
-    fn publish(&self, titles: &Vec<String>) {
+    fn publish(&self, titles: &Vec<String>, dump: &str) {
         if let Ok(file) = fs::File::create(&self.path) {
             let mut writer = BufWriter::new(file);
             for title in titles.iter() {

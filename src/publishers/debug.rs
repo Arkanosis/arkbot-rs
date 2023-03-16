@@ -14,7 +14,7 @@ impl Debug {
 }
 
 impl publishers::Publish for Debug {
-    fn publish(&self, titles: &Vec<String>) {
-        println!("Number of titles: {}", titles.len());
+    fn publish(&self, titles: &Vec<String>, dump: &str) {
+        println!("Number of titles: {}, dump: {}", titles.len(), dump);
     }
 }

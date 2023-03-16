@@ -19,6 +19,7 @@ edition = "2021"
 
 [dependencies]
 bzip2 = "0.4"
+chrono = { version = "0.4", features = ["unstable-locales"] }
 confy = "0.5"
 directories-next = "2.0"
 docopt = "1.1"

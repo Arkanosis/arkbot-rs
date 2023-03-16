@@ -6,6 +6,11 @@ mod wiki;
 
 use publishers::Publish;
 
+use chrono::{
+    NaiveDate,
+    prelude::Locale,
+};
+
 use directories_next::ProjectDirs;
 
 use serde_derive::{
@@ -171,7 +176,8 @@ pub fn test() {
             )));
 
             let publisher = publishers::Wiki::new(&bot, "User:Arktest/test", "Testing arkbot-rs");
-            publisher.publish(&vec!["foo".to_string(), "bar".to_string(), "baz".to_string()]);
+            let random_titles:  Vec<String> = (1..500).map(|n| format!("Title {}", n)).collect();
+            publisher.publish(&random_titles, &format!("{}", NaiveDate::parse_from_str("20230301", "%Y%m%d").unwrap().format_localized("%-d %B %Y", Locale::fr_FR)));
         } else {
             eprintln!("Unable to log in");
         }
