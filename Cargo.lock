@@ -28,7 +28,7 @@ dependencies = [
 
 [[package]]
 name = "arkbot"
-version = "0.3.0-dev"
+version = "0.3.0"
 dependencies = [
  "bzip2",
  "chrono",
