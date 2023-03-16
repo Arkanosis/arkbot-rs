@@ -26,13 +26,41 @@ Options:
 
 Run `cargo build --release` in your working copy.
 
+## Installing
+
+Run `sudo cp target/release/arkbot /usr/bin/arkbot` in your working copy.
+
+## Configuring
+
+Create `~/.config/arkbot/config.toml` with the following content:
+
+```toml
+login = '$BOT_NAME'
+password = '$BOT_PASSWORD'
+output_directory = '/tmp/.arkbot-data'
+```
+
+And replace `$BOT_NAME` with your bot account name and `$BOT_PASSWORD` with your bot account password.
+Please use a [bot password](https://www.mediawiki.org/wiki/Manual:Bot_passwords) created for arkbot-rs, and not the actual account password.
+
 ## Enabling as a systemd service, run hourly
 
-```
+```console
 systemctl --user link systemd/arkbot.service systemd/arkbot.timer
 systemctl --user daemon-reload
 systemctl --user enable --now arkbot.timer
 ```
+
+Arkbot will then check every hour if there is a new dump available.
+If there is one, it will download it to `output_directory`, process it, and update the pages on the target wiki.
+
+Warning: as of now, the target wiki and target pages are hardcoded, which makes arkbot-rs only suitable for the French Wikpedia.
+
+## Monitoring
+
+You can check when arkbot-rs history using `systemctl --user --list-timer`.
+
+You can read arkbot-rs logs using `journalctl --user -u arkbot -f`.
 
 ## Contributing and reporting bugs
 
@@ -42,5 +70,5 @@ Please report bugs and feature requests on [GitHub issues](https://github.com/Ar
 
 ## License
 
-arkbot-rs is copyright (C) 2020-2021 Jérémie Roquet <jroquet@arkanosis.net> and
+arkbot-rs is copyright (C) 2020-2023 Jérémie Roquet <jroquet@arkanosis.net> and
 licensed under the ISC license.
