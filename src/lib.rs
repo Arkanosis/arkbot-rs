@@ -95,13 +95,13 @@ pub fn run() {
     std::fs::create_dir_all(&config.output_directory).expect("Unable to create output directory");
 
     let mut processors: Vec<Box<dyn processors::Process>> = Vec::new();
-    processors.push(Box::new(processors::Commercial::new()));
+    //processors.push(Box::new(processors::Commercial::new()));
     //processors.push(Box::new(processors::Debug::new()));
-    processors.push(Box::new(processors::Empty::new()));
+    //processors.push(Box::new(processors::Empty::new()));
     //processors.push(Box::new(processors::Impasse::new()));
-    processors.push(Box::new(processors::LastEdit::new()));
-    processors.push(Box::new(processors::NamespaceRedirect::new()));
-    processors.push(Box::new(processors::NoInfobox::new()));
+    //processors.push(Box::new(processors::LastEdit::new()));
+    //processors.push(Box::new(processors::NamespaceRedirect::new()));
+    //processors.push(Box::new(processors::NoInfobox::new()));
     processors.push(Box::new(processors::NoPortal::new()));
 
     let (mut state, state_path) = load_state();
@@ -120,14 +120,35 @@ pub fn run() {
             }
         });
 
-        for processor in processors.iter_mut() {
-            processor.finalize();
-            // TODO publish to wiki
+        if let (Some(login), Some(password)) = (&config.login, &config.password) {
+            let mut bot = bot::Bot::new(&config.server_url, &config.script_path);
+
+            if bot.login(&login, &password) {
+
+                for processor in processors.iter_mut() {
+                    processor.finalize();
+
+                    // TODO FIXME: use a different published for each processor
+                    let publisher = publishers::Wiki::new(&bot,
+                        "Projet:Articles sans portail",
+                        "Articles sans portail"
+                    );
+
+                    publisher.publish(&processor.lines(), &format!("{}", NaiveDate::parse_from_str(&date, "%Y%m%d").unwrap().format_localized("%-d %B %Y", Locale::fr_FR)));
+                }
+
+                // TODO clear processors (ie. forget about previous dump)
+
+                state.last_date = date.to_string();
+
+            } else {
+                eprintln!("Unable to log in");
+            }
+
+        } else {
+            eprintln!("Missing login or password in configuration");
         }
 
-        // TODO clear processors (ie. forget about previous dump)
-
-        state.last_date = date.to_string();
     });
 
     if let Ok(state_file) = File::create(&state_path) {
@@ -139,7 +160,7 @@ pub fn run() {
 pub fn test() {
     let config = load_config();
 
-    if let (Some(login), Some(password)) = (config.login, config.password) {
+    if let (Some(login), Some(password)) = (&config.login, &config.password) {
         let mut bot = bot::Bot::new(&config.server_url, &config.script_path);
 
         if bot.login(&login, &password) {
