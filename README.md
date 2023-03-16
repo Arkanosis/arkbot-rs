@@ -37,11 +37,15 @@ Create `~/.config/arkbot/config.toml` with the following content:
 ```toml
 login = '$BOT_NAME'
 password = '$BOT_PASSWORD'
+server_url = 'https://fr.wikipedia.org'
+script_path = '/w'
 output_directory = '/tmp/.arkbot-data'
 ```
 
 And replace `$BOT_NAME` with your bot account name and `$BOT_PASSWORD` with your bot account password.
 Please use a [bot password](https://www.mediawiki.org/wiki/Manual:Bot_passwords) created for arkbot-rs, and not the actual account password.
+
+The `output_directory` will be created, but it's not used anymore and may disapear in a future version.
 
 ## Enabling as a systemd service, run hourly
 
@@ -52,7 +56,7 @@ systemctl --user enable --now arkbot.timer
 ```
 
 Arkbot will then check every hour if there is a new dump available.
-If there is one, it will download it to `output_directory`, process it, and update the pages on the target wiki.
+If there is one, it will download it and update the pages on the target wiki.
 
 Warning: as of now, the target wiki and target pages are hardcoded, which makes arkbot-rs only suitable for the French Wikpedia.
 

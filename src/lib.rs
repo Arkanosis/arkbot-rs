@@ -4,6 +4,8 @@ mod processors;
 mod publishers;
 mod wiki;
 
+use publishers::Publish;
+
 use directories_next::ProjectDirs;
 
 use serde_derive::{
@@ -22,6 +24,8 @@ use std::{
 struct Config {
     login: Option<String>,
     password: Option<String>,
+    server_url: String,
+    script_path: String,
     output_directory: String,
 }
 
@@ -32,6 +36,8 @@ impl Default for Config {
         Self {
             login: None,
             password: None,
+            server_url: "https://fr.wikipedia.org".to_owned(),
+            script_path: "/w".to_owned(),
             output_directory: output_directory.to_str().unwrap().to_owned(),
         }
     }
@@ -129,43 +135,43 @@ pub fn test() {
     let config = load_config();
 
     if let (Some(login), Some(password)) = (config.login, config.password) {
-        let mut bot = bot::Bot::new("http://localhost:8080", "/w");
+        let mut bot = bot::Bot::new(&config.server_url, &config.script_path);
 
         if bot.login(&login, &password) {
 
-	    let mut publishers: Vec<Box<dyn publishers::Publish>> = Vec::new();
-	    publishers.push(Box::new(publishers::Wiki::new(&bot,
-		"Utilisateur:Arkbot/Caractères spéciaux à vérifier",
-		"Caractères spéciaux à vérifier"
-	    )));
-	    //publishers.push(Box::new(publishers::Debug::new()));
-	    publishers.push(Box::new(publishers::Wiki::new(&bot,
-		"Projet:Pages_vides/liste_des_pages_vides",
-		"Pages vides"
-	    )));
-	    //publishers.push(Box::new(publishers::Wiki::new(&bot,
-	    //    "Projet:Pages en impasse/liste des pages en impasse",
-	    //    "Pages en impasse"
-	    //)));
-	    publishers.push(Box::new(publishers::Wiki::new(&bot,
-		"Projet:Pages les moins modifiées",
-		"Pages les moins modifiées"
-	    )));
-	    publishers.push(Box::new(publishers::Wiki::new(&bot,
-		"Utilisateur:Arkbot/Pages redirigeant hors de l'espace de nom principal",
-		"Pages redirigeant hors de l'espace de nom principal"
-	    )));
-	    publishers.push(Box::new(publishers::Wiki::new(&bot,
-		"Projet:Articles sans infobox",
-		"Articles sans infobox"
-	    )));
-	    publishers.push(Box::new(publishers::Wiki::new(&bot,
-		"Projet:Articles sans portail",
-		"Articles sans portail"
-	    )));
+            let mut publishers: Vec<Box<dyn publishers::Publish>> = Vec::new();
+            publishers.push(Box::new(publishers::Wiki::new(&bot,
+                "Utilisateur:Arkbot/Caractères spéciaux à vérifier",
+                "Caractères spéciaux à vérifier"
+            )));
+            //publishers.push(Box::new(publishers::Debug::new()));
+            publishers.push(Box::new(publishers::Wiki::new(&bot,
+                "Projet:Pages_vides/liste_des_pages_vides",
+                "Pages vides"
+            )));
+            //publishers.push(Box::new(publishers::Wiki::new(&bot,
+            //    "Projet:Pages en impasse/liste des pages en impasse",
+            //    "Pages en impasse"
+            //)));
+            publishers.push(Box::new(publishers::Wiki::new(&bot,
+                "Projet:Pages les moins modifiées",
+                "Pages les moins modifiées"
+            )));
+            publishers.push(Box::new(publishers::Wiki::new(&bot,
+                "Utilisateur:Arkbot/Pages redirigeant hors de l'espace de nom principal",
+                "Pages redirigeant hors de l'espace de nom principal"
+            )));
+            publishers.push(Box::new(publishers::Wiki::new(&bot,
+                "Projet:Articles sans infobox",
+                "Articles sans infobox"
+            )));
+            publishers.push(Box::new(publishers::Wiki::new(&bot,
+                "Projet:Articles sans portail",
+                "Articles sans portail"
+            )));
 
-	    // let publisher = publishers::Wiki::new(&bot, "User:Arktest/test", "Testing arkbot-rs");
-	    // publisher.publish(&vec!["foo".to_string(), "bar".to_string(), "baz".to_string()]);
+            let publisher = publishers::Wiki::new(&bot, "User:Arktest/test", "Testing arkbot-rs");
+            publisher.publish(&vec!["foo".to_string(), "bar".to_string(), "baz".to_string()]);
         } else {
             eprintln!("Unable to log in");
         }
