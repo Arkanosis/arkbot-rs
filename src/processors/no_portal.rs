@@ -13,13 +13,18 @@ impl NoPortal {
         NoPortal {
             titles: Vec::new(),
             portal: Regex::new(r"(?imsx)\{\{(?:
+                abbatiales[\s_]homonymes|
                 abbayes[\s_]homonymes|
                 arrondissements[\s_]homonymes|
                 bandeau[\s_]standard[\s_]pour[\s_]page[\s_]d'homonymie|
+                basiliques[\s_]homonymes|
                 batailles[\s_]homonymes|
                 cantons[\s_]homonymes|
+                chapelles[\s_]homonymes|
+                chartreuses[\s_]homonymes|
                 communes[\s_]françaises[\s_]homonymes|
                 disambig|
+                édifices[\s_]religieux[\s_]homonymes|
                 films[\s_]homonymes|
                 gouvernements[\s_]homonymes|
                 guerres[\s_]homonymes|
@@ -36,8 +41,9 @@ impl NoPortal {
                 personnes[\s_]homonymes|
                 place[\s_]ou[\s_]square[\s_]homonyme|
                 portail|
-                prieurés[\s_]homonymes|
                 prénoms[\s_]homonymes|
+                prieurés[\s_]homonymes|
+                pseudonymes[\s_]homonymes|
                 rues[\s_]homonymes|
                 saints[\s_]homonymes|
                 sigle|
@@ -45,8 +51,7 @@ impl NoPortal {
                 titres[\s_]homonymes|
                 toponymie|
                 unités[\s_]homonymes|
-                villes[\s_]homonymes|
-                édifices[\s_]religieux[\s_]homonymes
+                villes[\s_]homonymes
             )").unwrap(),
         }
     }
