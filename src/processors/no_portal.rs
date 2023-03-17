@@ -19,12 +19,17 @@ impl NoPortal {
                 bandeau[\s_]standard[\s_]pour[\s_]page[\s_]d'homonymie|
                 basiliques[\s_]homonymes|
                 batailles[\s_]homonymes|
+                calvaires[\s_]homonymes|
                 cantons[\s_]homonymes|
+                cathédrales[\s_]homonymes|
                 chapelles[\s_]homonymes|
                 chartreuses[\s_]homonymes|
+                collégiales[\s_]homonymes|
                 communes[\s_]françaises[\s_]homonymes|
+                couvents[\s_]homonymes|
                 disambig|
                 édifices[\s_]religieux[\s_]homonymes|
+                églises[\s_]homonymes|
                 films[\s_]homonymes|
                 gouvernements[\s_]homonymes|
                 guerres[\s_]homonymes|

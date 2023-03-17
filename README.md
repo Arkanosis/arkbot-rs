@@ -58,7 +58,7 @@ systemctl --user enable --now arkbot.timer
 Arkbot will then check every hour if there is a new dump available.
 If there is one, it will download it and update the pages on the target wiki.
 
-Warning: as of now, the target wiki and target pages are hardcoded, which makes arkbot-rs only suitable for the French Wikpedia.
+Warning: as of now, the target pages are hardcoded, which makes arkbot-rs only suitable for the French Wikpedia.
 
 ## Monitoring
 

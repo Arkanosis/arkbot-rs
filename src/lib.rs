@@ -94,6 +94,8 @@ pub fn run() {
 
     std::fs::create_dir_all(&config.output_directory).expect("Unable to create output directory");
 
+    // TODO Load a list of pairs (processor, List[publishers]) from the configuration
+    // TODO Build processors and publishers using factories
     let mut processors: Vec<Box<dyn processors::Process>> = Vec::new();
     //processors.push(Box::new(processors::Commercial::new()));
     //processors.push(Box::new(processors::Debug::new()));
@@ -128,7 +130,7 @@ pub fn run() {
                 for processor in processors.iter_mut() {
                     processor.finalize();
 
-                    // TODO FIXME: use a different published for each processor
+                    // TODO FIXME: use a different list of publishers for each processor
                     let publisher = publishers::Wiki::new(&bot,
                         "Projet:Articles sans portail",
                         "Articles sans portail"
