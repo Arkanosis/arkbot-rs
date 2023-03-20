@@ -35,11 +35,15 @@ impl NoPortal {
                 guerres[\s_]homonymes|
                 homonyme|
                 homonymie|
+                homonymie[\s_]de[\s_](club[\s_]sportif|monument|route|ponts)|
+                homonymie[\s_](bateau|Comète|dynastique|numismatique|vidéoludique)|
                 hydronymie|
                 internationalisation|
                 isomérie|
                 lieux[\s_]homonymes|
                 monastères[\s_]homonymes|
+                voir[\s_]paronymes|
+                patronyme[\s_](albanais|azéri|basque|bosniaque|bulgare|croate|danois|finnois|germanique|hongrois|indien|islandais|italien|macédonien|maltais|norvégien|serbe|slovène|suédois|turc|japonais)|
                 paronymie|
                 patronyme|
                 patronymie|
