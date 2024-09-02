@@ -10,7 +10,7 @@ pub struct Impasse {
 
 impl Impasse {
     pub fn new() -> Self {
-        Impasse {
+        Self {
             titles: Vec::new(),
             link: Regex::new(r"(?imsx)
                 # Link

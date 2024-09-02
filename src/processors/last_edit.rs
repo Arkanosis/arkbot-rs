@@ -19,7 +19,7 @@ pub struct LastEdit {
 
 impl LastEdit {
     pub fn new() -> Self {
-        LastEdit {
+        Self {
             edits: Vec::new(),
             homonymy: Regex::new(r"(?imsx)\{\{(?:
                 abbayes[\s_]homonymes|

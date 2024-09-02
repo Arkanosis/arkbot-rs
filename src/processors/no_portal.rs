@@ -10,7 +10,7 @@ pub struct NoPortal {
 
 impl NoPortal {
     pub fn new() -> Self {
-        NoPortal {
+        Self {
             titles: Vec::new(),
             portal: Regex::new(r"(?imsx)\{\{(?:
                 abbatiales[\s_]homonymes|

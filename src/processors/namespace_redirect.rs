@@ -7,7 +7,7 @@ pub struct NamespaceRedirect {
 
 impl NamespaceRedirect {
     pub fn new() -> Self {
-        NamespaceRedirect {
+        Self {
             titles: Vec::new(),
         }
     }

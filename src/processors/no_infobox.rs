@@ -16,7 +16,7 @@ pub struct NoInfobox {
 
 impl NoInfobox {
     pub fn new() -> Self {
-        NoInfobox {
+        Self {
             titles: Vec::new(),
             infobox: Regex::new(r"(?imsx)\{\{(?:
                 abbayes[\s_]homonymes|

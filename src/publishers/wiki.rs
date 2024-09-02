@@ -14,7 +14,7 @@ pub struct Wiki<'a> {
 
 impl<'a> Wiki<'a> {
     pub fn new(bot: &'a bot::Bot, root: &str, summary: &str) -> Self {
-        Wiki {
+        Self {
             bot: bot,
             root: root.to_string(),
             summary: summary.to_string(),

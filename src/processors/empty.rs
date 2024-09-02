@@ -13,7 +13,7 @@ pub struct Empty {
 
 impl Empty {
     pub fn new() -> Self {
-        let mut result = Empty {
+        let mut result = Self {
             titles: Vec::new(),
             empty: Regex::new(r"^[[:space:]]*$").unwrap(),
             ignore: HashSet::new(),

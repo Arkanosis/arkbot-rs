@@ -54,7 +54,7 @@ pub struct Bot {
 
 impl Bot {
     pub fn new(server_url: &str, script_path: &str) -> Self {
-        Bot {
+        Self {
             client: Client::builder()
                 .user_agent(format!("arkbot/{}", crate::version()))
                 .cookie_store(true)

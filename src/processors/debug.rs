@@ -8,7 +8,7 @@ pub struct Debug {
 impl Debug {
     #[allow(dead_code)]
     pub fn new() -> Self {
-        Debug {
+        Self {
             titles: Vec::new(),
         }
     }

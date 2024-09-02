@@ -14,7 +14,7 @@ pub struct File {
 
 impl File {
     pub fn new(root: &str, name: &str) -> Self {
-        File {
+        Self {
             path: format!("{}/{}", root, name),
         }
     }

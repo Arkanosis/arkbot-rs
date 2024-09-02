@@ -10,7 +10,7 @@ pub struct Commercial {
 
 impl Commercial {
     pub fn new() -> Self {
-        Commercial {
+        Self {
             titles: Vec::new(),
             ignore: Regex::new(r"(?imsx)
                 # references
