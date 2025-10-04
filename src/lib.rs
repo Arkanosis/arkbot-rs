@@ -54,7 +54,16 @@ struct State {
 }
 
 pub fn version() -> &'static str {
-    return option_env!("CARGO_PKG_VERSION").unwrap_or("unknown");
+    if env!("CARGO_PKG_VERSION").ends_with("-dev") {
+        concat!(env!("CARGO_PKG_VERSION"), "+", env!("VERGEN_GIT_SHA"))
+    } else {
+        env!("CARGO_PKG_VERSION")
+    }
+}
+
+
+pub fn user_agent() -> String {
+    format!("arkbot/{} (https://github.com/Arkanosis/arkbot-rs)", version())
 }
 
 fn get_directories() -> ProjectDirs {

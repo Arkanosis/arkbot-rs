@@ -56,7 +56,7 @@ impl Bot {
     pub fn new(server_url: &str, script_path: &str) -> Self {
         Self {
             client: Client::builder()
-                .user_agent(format!("arkbot/{}", crate::version()))
+                .user_agent(crate::user_agent())
                 .cookie_store(true)
                 .build()
                 .unwrap(),
