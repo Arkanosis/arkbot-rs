@@ -74,5 +74,5 @@ Please report bugs and feature requests on [GitHub issues](https://github.com/Ar
 
 ## License
 
-arkbot-rs is copyright (C) 2020-2023 Jérémie Roquet <jroquet@arkanosis.net> and
+arkbot-rs is copyright (C) 2020-2025 Jérémie Roquet <jroquet@arkanosis.net> and
 licensed under the ISC license.

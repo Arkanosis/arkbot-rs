@@ -42,7 +42,7 @@ impl<'a> publishers::Publish for Wiki<'a> {
 {{{{../intro}}}}
 
 Dernière mise à jour le ~~~~~ avec le dump du {}.
-"#, &self.summary, page_start, page_end, dump);
+"#, &self.summary, page_start, page_end, dump).unwrap();
             for section_id in 1..=SECTIONS_PER_PAGE {
                 let section_start = page_start + (section_id - 1) * LINES_PER_SECTION;
                 let section_end = min(page_start + section_id * LINES_PER_SECTION - 1, titles.len());
@@ -53,7 +53,7 @@ Dernière mise à jour le ~~~~~ avec le dump du {}.
 === {} à {} ===
 
 <ol start="{}" style="-moz-column-count:{}; column-count:{};">
-"#, section_start, section_end, section_start, COLUMN_PER_SECTION, COLUMN_PER_SECTION);
+"#, section_start, section_end, section_start, COLUMN_PER_SECTION, COLUMN_PER_SECTION).unwrap();
                 for column_id in 1..=COLUMN_PER_SECTION {
                     let column_start = section_start + (column_id - 1) * LINES_PER_COLUMN;
                     let column_end = min(section_start + column_id * LINES_PER_COLUMN - 1, titles.len());
@@ -63,14 +63,14 @@ Dernière mise à jour le ~~~~~ avec le dump du {}.
                     write!(&mut text, r#"
 <!-- {} à {} -->
 
-"#, column_start, column_end);
+"#, column_start, column_end).unwrap();
                     for line_id in column_start..=min(column_end, titles.len()) {
-                        writeln!(&mut text, r#"<li>[[{}]]</li>"#, titles.get(line_id - 1).unwrap());
+                        writeln!(&mut text, r#"<li>[[{}]]</li>"#, titles.get(line_id - 1).unwrap()).unwrap();
                     }
                 }
                 write!(&mut text, r#"
 </ol>
-"#);
+"#).unwrap();
             }
             if !self.bot.edit_page(&format!("{}/{}", self.root, page_id), &format!("bot: {} au {}, {} à {}", &self.summary, dump, page_start, page_end), &text) {
                 eprintln!("Unable to edit page {}/{}", self.root, page_id);
