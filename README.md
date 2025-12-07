@@ -45,7 +45,7 @@ output_directory = '/tmp/.arkbot-data'
 And replace `$BOT_NAME` with your bot account name and `$BOT_PASSWORD` with your bot account password.
 Please use a [bot password](https://www.mediawiki.org/wiki/Manual:Bot_passwords) created for arkbot-rs, and not the actual account password.
 
-The `output_directory` will be created, but it's not used anymore and may disapear in a future version.
+The `output_directory` will be created, but it's not used anymore and may disappear in a future version.
 
 ## Enabling as a systemd service, run hourly
 
