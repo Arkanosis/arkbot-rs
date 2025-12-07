@@ -21,11 +21,11 @@ build = "build.rs"
 [dependencies]
 bzip2 = "0.6"
 chrono = { version = "0.4", features = ["unstable-locales"] }
-confy = "1.0"
+confy = "2.0"
 directories-next = "2.0"
 docopt = "1.1"
 quick-xml = "0.38"
-regex = "1.11"
+regex = "1.12"
 reqwest = { version = "0.12", features = ["blocking", "cookies", "gzip", "json"] }
 serde = "1.0"
 serde_derive = "1.0"
