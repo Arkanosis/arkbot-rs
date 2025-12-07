@@ -79,7 +79,7 @@ pub fn parse<Callback: FnMut(&wiki::Page) -> ()>(stream: &mut dyn BufRead, mut c
                 }
             }
             Ok(Event::Text(ref event)) => {
-                let escaped_event = event.decode();
+                let escaped_event = event.unescape();
                 match current_tag {
                     Tag::Namespace => {
                         match escaped_event {

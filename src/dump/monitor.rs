@@ -22,7 +22,7 @@ pub fn monitor<Callback: FnMut(&str, &str) -> ()>(wiki: &str, dump: &str, mut ca
             },
             Ok(Event::Text(ref event)) => {
                 if on_link {
-                    let escaped_event = event.decode();
+                    let escaped_event = event.unescape();
                     match escaped_event {
                         Ok(ref buffer) => {
                             let mut url = std::str::from_utf8(buffer.as_bytes()).unwrap().to_string();
