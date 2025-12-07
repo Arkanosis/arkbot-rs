@@ -1,6 +1,6 @@
 [package]
 name = "arkbot"
-version = "0.4.1"
+version = "0.5.0-dev"
 description = "A Rust rewrite (and complete redesign) of Arkanosis' Wikipedia bot"
 
 authors = ["Jérémie Roquet <jroquet@arkanosis.net>"]
