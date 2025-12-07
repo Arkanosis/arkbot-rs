@@ -62,7 +62,7 @@ Warning: as of now, the target pages are hardcoded, which makes arkbot-rs only s
 
 ## Monitoring
 
-You can check when arkbot-rs history using `systemctl --user --list-timer`.
+You can check when arkbot-rs history using `systemctl --user list-timers`.
 
 You can read arkbot-rs logs using `journalctl --user -u arkbot -f`.
 
